@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SVBBThreadPost" title="SV: BB Code: Thread and Post" version_string="1.01" version_id="1" url="http://forums.sufficientvelocity.com" install_callback_class="" install_callback_method="" uninstall_callback_class="" uninstall_callback_method="">
+<addon addon_id="SVBBThreadPost" title="SV: BB Code: Thread and Post" version_string="1.0.2" version_id="2" url="http://forums.sufficientvelocity.com" install_callback_class="" install_callback_method="" uninstall_callback_class="" uninstall_callback_method="">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -33,13 +33,13 @@
   </public_template_modifications>
   <bb_code_media_sites/>
   <bb_codes>
-    <bb_code bb_code_id="post" bb_code_mode="callback" has_option="yes" callback_class="SVBBThreadPost_BbCode_threadpost" callback_method="post" option_regex="/^[0-9]+$/" trim_lines_after="0" plain_children="0" disable_smilies="0" disable_nl2br="0" disable_autolink="1" allow_signature="1" editor_icon_url="" sprite_mode="0" active="1">
+    <bb_code bb_code_id="post" bb_code_mode="callback" has_option="yes" callback_class="SV_BBCodeThreadPost_BbCode_ThreadPost" callback_method="post" option_regex="/^[0-9]+$/" trim_lines_after="0" plain_children="0" disable_smilies="0" disable_nl2br="0" disable_autolink="1" allow_signature="1" editor_icon_url="" sprite_mode="0" active="1">
       <replace_html><![CDATA[]]></replace_html>
       <replace_html_email><![CDATA[]]></replace_html_email>
       <replace_text><![CDATA[]]></replace_text>
       <example><![CDATA[[post=PostID]link description[/post]]]></example>
     </bb_code>
-    <bb_code bb_code_id="thread" bb_code_mode="callback" has_option="yes" callback_class="SVBBThreadPost_BbCode_threadpost" callback_method="thread" option_regex="/^[0-9]+$/" trim_lines_after="0" plain_children="0" disable_smilies="0" disable_nl2br="0" disable_autolink="1" allow_signature="1" editor_icon_url="" sprite_mode="0" active="1">
+    <bb_code bb_code_id="thread" bb_code_mode="callback" has_option="yes" callback_class="SV_BBCodeThreadPost_BbCode_ThreadPost" callback_method="thread" option_regex="/^[0-9]+$/" trim_lines_after="0" plain_children="0" disable_smilies="0" disable_nl2br="0" disable_autolink="1" allow_signature="1" editor_icon_url="" sprite_mode="0" active="1">
       <replace_html><![CDATA[]]></replace_html>
       <replace_html_email><![CDATA[]]></replace_html_email>
       <replace_text><![CDATA[]]></replace_text>
