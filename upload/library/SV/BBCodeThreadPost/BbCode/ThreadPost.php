@@ -20,15 +20,42 @@ class SV_BBCodeThreadPost_BbCode_ThreadPost
     {
         if (is_numeric($thread_id))
         {
-            $forumModel = self::getModelFromCache($formatter, 'XenForo_Model_Forum');
-            $forum = $forumModel->getForumByThreadId($thread_id);
-            if ($forum && $forumModel->canViewForum($forum))
+            if (!isset($formatter->_forumCache))
+                $formatter->_forumCache = array();        
+            if (!isset($formatter->_threadCache))
+                $formatter->_threadCache = array();
+
+            if (isset($formatter->_threadCache[$thread_id]))
             {
+                $threadModel = $formatter->_threadCache[$thread_id][0];
+                $thread = $formatter->_threadCache[$thread_id][1];           
+            }
+            else
+            {                
                 $threadModel = self::getModelFromCache($formatter, 'XenForo_Model_Thread');
-                $thread = $threadModel->getThreadById($thread_id);                                
-                if ($thread && $threadModel->canViewThread($thread, $forum))                    
-                    return array($forum, $thread);
-            }            
+                $thread = $threadModel->getThreadById($thread_id);
+                
+                $formatter->_threadCache[$thread_id] = array($threadModel, $thread );
+            }
+            if ($thread)
+            {
+                $forum_id = $thread['forum_id'];
+                if (isset($formatter->_forumCache[$forum_id]))
+                {
+                    $forumModel = $formatter->_threadCache[$forum_id][0];
+                    $forum = $formatter->_threadCache[$forum_id][1];             
+                }
+                else
+                {
+                    $forumModel = self::getModelFromCache($formatter, 'XenForo_Model_Forum');
+                    $forum = $forumModel->getForumByThreadId($thread_id);
+                    
+                    $formatter->_forumCache[$forum_id] = array($forumModel,$forum );
+                }
+            }
+            if ($forum)
+            if ($forumModel->canViewForum($forum) && $threadModel->canViewThread($thread, $forum))                 
+                return array($forum, $thread);          
         }   
         return array(0,0);
     }
@@ -37,8 +64,22 @@ class SV_BBCodeThreadPost_BbCode_ThreadPost
     {
         if (is_numeric($post_id))
         {
-            $postModel = self::getModelFromCache($formatter,'XenForo_Model_Post');
-            $post = $postModel->getPostById($post_id);         
+            if (!isset($formatter->_postCache))
+                $formatter->_postCache = array();
+
+            if (isset($formatter->_postCache[$post_id]))
+            {
+                $threadModel = $formatter->_postCache[$post_id][0];
+                $thread = $formatter->_postCache[$post_id][1];           
+            }
+            else
+            {                
+                $postModel = self::getModelFromCache($formatter,'XenForo_Model_Post');
+                $post = $postModel->getPostById($post_id);  
+                
+                $formatter->_postCache[$post_id] = array($postModel, $post );
+            }                
+       
             if ($post)
             {
                 list ($forum, $thread) = self::getThread($formatter, $post['thread_id']);                
