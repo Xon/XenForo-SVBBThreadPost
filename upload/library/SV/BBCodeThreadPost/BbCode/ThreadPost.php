@@ -39,11 +39,11 @@ class SV_BBCodeThreadPost_BbCode_ThreadPost
             }
             if ($thread)
             {
-                $forum_id = $thread['forum_id'];
+                $forum_id = $thread['node_id'];
                 if (isset($formatter->_forumCache[$forum_id]))
                 {
-                    $forumModel = $formatter->_threadCache[$forum_id][0];
-                    $forum = $formatter->_threadCache[$forum_id][1];             
+                    $forumModel = $formatter->_forumCache[$forum_id][0];
+                    $forum = $formatter->_forumCache[$forum_id][1];             
                 }
                 else
                 {
