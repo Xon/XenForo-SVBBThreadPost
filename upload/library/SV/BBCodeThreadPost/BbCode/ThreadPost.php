@@ -69,8 +69,8 @@ class SV_BBCodeThreadPost_BbCode_ThreadPost
 
             if (isset($formatter->_postCache[$post_id]))
             {
-                $threadModel = $formatter->_postCache[$post_id][0];
-                $thread = $formatter->_postCache[$post_id][1];           
+                $postModel = $formatter->_postCache[$post_id][0];
+                $post = $formatter->_postCache[$post_id][1];           
             }
             else
             {                
