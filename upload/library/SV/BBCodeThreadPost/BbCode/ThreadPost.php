@@ -20,6 +20,8 @@ class SV_BBCodeThreadPost_BbCode_ThreadPost
     {
         if (is_numeric($thread_id))
         {
+            $thread = null;
+            $forum = null;
             if (!isset($formatter->_forumCache))
                 $formatter->_forumCache = array();        
             if (!isset($formatter->_threadCache))
