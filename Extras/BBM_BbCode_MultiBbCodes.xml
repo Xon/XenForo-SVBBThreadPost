@@ -2,19 +2,19 @@
 <bbm_bbcodes>
   <BbCode>
     <General>
-      <tag>@post</tag>
+      <tag>post</tag>
       <title><![CDATA[Post]]></title>
       <description><![CDATA[Allows linking to a specific post and the link will change if the URL structure ever changes.]]></description>
-      <example><![CDATA[#]]></example>
+      <example><![CDATA[[post=1]Link Title[/post]]]></example>
       <active>1</active>
       <display_help>1</display_help>
-      <bbcode_id></bbcode_id>
-      <bbcode_addon></bbcode_addon>
+      <bbcode_id>post</bbcode_id>
+      <bbcode_addon>SV_ThreadPostBBCode</bbcode_addon>
     </General>
     <Methods>
       <Replacement>
-        <start_range><![CDATA[#]]></start_range>
-        <end_range><![CDATA[#]]></end_range>
+        <start_range><![CDATA[]]></start_range>
+        <end_range><![CDATA[]]></end_range>
         <options_number>1</options_number>
       </Replacement>
       <Template>
@@ -24,8 +24,8 @@
         <callback_method></callback_method>
       </Template>
       <PhpCallback>
-        <class></class>
-        <method></method>
+        <class>SV_ThreadPostBBCode_Listener</class>
+        <method>bbcodePost</method>
       </PhpCallback>
     </Methods>
     <ParserOptions>
@@ -33,15 +33,16 @@
       <parseOptions>0</parseOptions>
       <regex>/^[0-9]*$/</regex>
       <trimLeadingLinesAfter>0</trimLeadingLinesAfter>
-      <plainCallback>0</plainCallback>
+      <plainCallback>1</plainCallback>
       <plainChildren>0</plainChildren>
       <stopSmilies>0</stopSmilies>
       <stopLineBreakConversion>0</stopLineBreakConversion>
+      <trimContent>0</trimContent>
       <wrapping_tag>none</wrapping_tag>
       <wrapping_option></wrapping_option>
-      <emptyContent_check>1</emptyContent_check>
+      <emptyContent_check>0</emptyContent_check>
       <allow_signature>1</allow_signature>
-      <preParser>0</preParser>
+      <preParser>1</preParser>
       <options_separator></options_separator>
     </ParserOptions>
     <ParserPerms>
@@ -71,27 +72,29 @@
       <tagOptions><![CDATA[PostId]]></tagOptions>
       <tagContent><![CDATA[Title]]></tagContent>
       <redactor_has_icon>0</redactor_has_icon>
-      <redactor_sprite_mode>0</redactor_sprite_mode>
-      <redactor_sprite_params_x>0</redactor_sprite_params_x>
-      <redactor_sprite_params_y>0</redactor_sprite_params_y>
-      <redactor_image_url><![CDATA[]]></redactor_image_url>
+      <redactor_sprite_mode>1</redactor_sprite_mode>
+      <redactor_sprite_params_x>3</redactor_sprite_params_x>
+      <redactor_sprite_params_y>-45</redactor_sprite_params_y>
+      <redactor_image_url><![CDATA[styles/default/sv/editor/icons2.png]]></redactor_image_url>
+      <redactor_button_type>img</redactor_button_type>
+      <redactor_button_type_opt><![CDATA[]]></redactor_button_type_opt>
     </Button>
   </BbCode>
   <BbCode>
     <General>
-      <tag>@thread</tag>
+      <tag>thread</tag>
       <title><![CDATA[Thread]]></title>
       <description><![CDATA[Allows linking to a specific thread and the link will change if the URL structure ever changes.]]></description>
-      <example><![CDATA[#]]></example>
+      <example><![CDATA[[thread=1]Link Title[/thread]]]></example>
       <active>1</active>
       <display_help>1</display_help>
-      <bbcode_id></bbcode_id>
-      <bbcode_addon></bbcode_addon>
+      <bbcode_id>thread</bbcode_id>
+      <bbcode_addon>SV_ThreadPostBBCode</bbcode_addon>
     </General>
     <Methods>
       <Replacement>
-        <start_range><![CDATA[#]]></start_range>
-        <end_range><![CDATA[#]]></end_range>
+        <start_range><![CDATA[]]></start_range>
+        <end_range><![CDATA[]]></end_range>
         <options_number>1</options_number>
       </Replacement>
       <Template>
@@ -101,8 +104,8 @@
         <callback_method></callback_method>
       </Template>
       <PhpCallback>
-        <class></class>
-        <method></method>
+        <class>SV_ThreadPostBBCode_Listener</class>
+        <method>bbcodeThread</method>
       </PhpCallback>
     </Methods>
     <ParserOptions>
@@ -110,15 +113,16 @@
       <parseOptions>0</parseOptions>
       <regex>/^[0-9]*$/</regex>
       <trimLeadingLinesAfter>0</trimLeadingLinesAfter>
-      <plainCallback>0</plainCallback>
+      <plainCallback>1</plainCallback>
       <plainChildren>0</plainChildren>
       <stopSmilies>0</stopSmilies>
       <stopLineBreakConversion>0</stopLineBreakConversion>
+      <trimContent>0</trimContent>
       <wrapping_tag>none</wrapping_tag>
       <wrapping_option></wrapping_option>
-      <emptyContent_check>1</emptyContent_check>
+      <emptyContent_check>0</emptyContent_check>
       <allow_signature>1</allow_signature>
-      <preParser>0</preParser>
+      <preParser>1</preParser>
       <options_separator></options_separator>
     </ParserOptions>
     <ParserPerms>
@@ -148,10 +152,12 @@
       <tagOptions><![CDATA[ThreadId]]></tagOptions>
       <tagContent><![CDATA[Title]]></tagContent>
       <redactor_has_icon>0</redactor_has_icon>
-      <redactor_sprite_mode>0</redactor_sprite_mode>
-      <redactor_sprite_params_x>0</redactor_sprite_params_x>
-      <redactor_sprite_params_y>0</redactor_sprite_params_y>
-      <redactor_image_url><![CDATA[]]></redactor_image_url>
+      <redactor_sprite_mode>1</redactor_sprite_mode>
+      <redactor_sprite_params_x>3</redactor_sprite_params_x>
+      <redactor_sprite_params_y>-15</redactor_sprite_params_y>
+      <redactor_image_url><![CDATA[styles/default/sv/editor/icons2.png]]></redactor_image_url>
+      <redactor_button_type>img</redactor_button_type>
+      <redactor_button_type_opt><![CDATA[]]></redactor_button_type_opt>
     </Button>
   </BbCode>
 </bbm_bbcodes>

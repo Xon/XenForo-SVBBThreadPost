@@ -6,7 +6,11 @@
   <admin_templates/>
   <admin_template_modifications/>
   <code_events/>
-  <code_event_listeners/>
+  <code_event_listeners>
+    <listener event_id="bbm_callback_precache" execute_order="10" callback_class="SV_ThreadPostBBCode_Listener" callback_method="bbcodeThreadPostPreCache" active="1" hint="" description=""/>
+    <listener event_id="bbm_callback_template_pre" execute_order="10" callback_class="SV_ThreadPostBBCode_Listener" callback_method="bbcodeThread" active="1" hint="thread" description=""/>
+    <listener event_id="bbm_callback_template_pre" execute_order="10" callback_class="SV_ThreadPostBBCode_Listener" callback_method="bbcodePost" active="1" hint="post" description=""/>
+  </code_event_listeners>
   <cron/>
   <email_templates/>
   <email_template_modifications/>
@@ -40,18 +44,5 @@
     </modification>
   </public_template_modifications>
   <bb_code_media_sites/>
-  <bb_codes>
-    <bb_code bb_code_id="post" bb_code_mode="callback" has_option="yes" callback_class="SV_BBCodeThreadPost_BbCode_ThreadPost" callback_method="post" option_regex="/^[0-9]+$/" trim_lines_after="0" plain_children="0" disable_smilies="0" disable_nl2br="0" disable_autolink="1" allow_empty="0" allow_signature="1" editor_icon_url="" sprite_mode="0" active="1">
-      <replace_html><![CDATA[]]></replace_html>
-      <replace_html_email><![CDATA[]]></replace_html_email>
-      <replace_text><![CDATA[]]></replace_text>
-      <example><![CDATA[[post=PostID]link description[/post]]]></example>
-    </bb_code>
-    <bb_code bb_code_id="thread" bb_code_mode="callback" has_option="yes" callback_class="SV_BBCodeThreadPost_BbCode_ThreadPost" callback_method="thread" option_regex="/^[0-9]+$/" trim_lines_after="0" plain_children="0" disable_smilies="0" disable_nl2br="0" disable_autolink="1" allow_empty="0" allow_signature="1" editor_icon_url="" sprite_mode="0" active="1">
-      <replace_html><![CDATA[]]></replace_html>
-      <replace_html_email><![CDATA[]]></replace_html_email>
-      <replace_text><![CDATA[]]></replace_text>
-      <example><![CDATA[[thread=ThreadID]link description[/thread]]]></example>
-    </bb_code>
-  </bb_codes>
+  <bb_codes/>
 </addon>
