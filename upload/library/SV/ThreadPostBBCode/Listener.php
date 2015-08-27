@@ -14,6 +14,10 @@ class SV_ThreadPostBBCode_Listener
         return $_modelCache[$class];
     }
 
+    // cache for the entire lifetime of the request, this permits edits to not be insane
+    static $postCache = array();
+    static $threadCache = array();
+
     public static function bbcodeThreadPostPreCache(array &$preCache, array &$rendererStates, $formatterName)
     {
         if(empty($preCache['sv_LinkPostIds']) && empty($preCache['sv_LinkThreadIds']))
@@ -32,11 +36,11 @@ class SV_ThreadPostBBCode_Listener
         $threadPermCheck = array();
 
         $nodesPerm = null;
-        $postthread = array();
         $posts = array();
         if (!empty($preCache['sv_LinkPostIds']))
         {
-            $postIds = array_unique($preCache['sv_LinkPostIds']);
+            $postIds = XenForo_Application::arrayColumn(self::$postCache, 'post_id');
+            $postIds = array_diff(array_unique($preCache['sv_LinkPostIds']), $postIds);
             $posts = $postModel->getPostsByIds($postIds, array(
                 'join' => XenForo_Model_Post::FETCH_THREAD | XenForo_Model_Post::FETCH_FORUM
             ));
@@ -66,15 +70,26 @@ class SV_ThreadPostBBCode_Listener
                 }
                 else
                 {
-                    $postthread[$post['thread_id']] = $post;
+                    // do not keep the message
+                    unset($post['message']);
+                    unset($post['message_parsed']);
+                    self::$threadCache[$post['thread_id']] = $post;
+                }
+                self::$postCache[$postId] = $post;
+            }
+            // negative lookup caching
+            foreach($postIds as $postId)
+            {
+                if (!isset(self::$postCache[$postId]))
+                {
+                    self::$postCache[$postId] = array('post_id' => $postId);
                 }
             }
-            $preCache['sv_LinkPosts'] = $posts;
         }
 
         if (!empty($preCache['sv_LinkThreadIds']))
         {
-            $threadIds = array_unique(XenForo_Application::arrayColumn($posts, 'thread_id'));
+            $threadIds = array_unique(XenForo_Application::arrayColumn(self::$threadCache, 'thread_id'));
             $threadIds = array_diff(array_unique($preCache['sv_LinkThreadIds']), $threadIds);
             $threads = $threadModel->getThreadsByIds($threadIds, array(
                 'join' => XenForo_Model_Thread::FETCH_FORUM
@@ -94,11 +109,18 @@ class SV_ThreadPostBBCode_Listener
                 if (!$forumPermCheck[$nodeId] ||
                     !$threadModel->canViewThread($thread, $thread, $errorPhraseKey, $nodePermissions, $visitorArr))
                 {
-                    $threads[$threadId] = array('thread_id' => $threadId);
+                    $thread = array('thread_id' => $threadId);
+                }
+                self::$threadCache[$threadId] = $thread;
+            }
+            // negative lookup caching
+            foreach($threadIds as $threadId)
+            {
+                if (!isset(self::$threadCache[$threadId]))
+                {
+                    self::$threadCache[$threadId] = array('thread_id' => $threadId);
                 }
             }
-
-            $preCache['sv_LinkThreads'] = $threads + $postthread;
         }
     }
 
@@ -115,16 +137,11 @@ class SV_ThreadPostBBCode_Listener
         $thread = array('thread_id' => $thread_id);
 
         // Get data section
-        if(!empty($rendererStates['bbmPreCacheComplete']))
+        if(isset(self::$threadCache[$thread_id]))
         {
-            $cacheData = $parentClass->getBbmPreCacheData('sv_LinkThreads');
-
-            if (isset($cacheData[$thread_id]))
-            {
-                $thread = $cacheData[$thread_id];
-            }
+            $thread = self::$threadCache[$thread_id];
         }
-        else
+        else if ($parentClass->getView() !== null)
         {
             $threadModel = self::getModelFromCache('XenForo_Model_Thread');
             $forumModel = self::getModelFromCache('XenForo_Model_Forum');
@@ -165,16 +182,11 @@ class SV_ThreadPostBBCode_Listener
         $post = array('post_id' => $post_id);
 
         // Get data section
-        if(!empty($rendererStates['bbmPreCacheComplete']))
+        if(isset(self::$postCache[$post_id]))
         {
-            $cacheData = $parentClass->getBbmPreCacheData('sv_LinkPosts');
-
-            if (isset($cacheData[$post_id]))
-            {
-                $post = $cacheData[$post_id];
-            }
+            $thread = self::$postCache[$post_id];
         }
-        else
+        else if ($parentClass->getView() !== null)
         {
             $postModel = self::getModelFromCache('XenForo_Model_Post');
             $threadModel = self::getModelFromCache('XenForo_Model_Thread');
