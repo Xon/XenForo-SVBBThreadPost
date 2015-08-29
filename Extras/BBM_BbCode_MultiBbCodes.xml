@@ -75,7 +75,7 @@
       <redactor_sprite_mode>1</redactor_sprite_mode>
       <redactor_sprite_params_x>3</redactor_sprite_params_x>
       <redactor_sprite_params_y>-45</redactor_sprite_params_y>
-      <redactor_image_url><![CDATA[styles/default/sv/editor/icons2.png]]></redactor_image_url>
+      <redactor_image_url><![CDATA[/styles/default/sv/editor/icons2.png]]></redactor_image_url>
       <redactor_button_type>img</redactor_button_type>
       <redactor_button_type_opt><![CDATA[]]></redactor_button_type_opt>
     </Button>
@@ -155,7 +155,7 @@
       <redactor_sprite_mode>1</redactor_sprite_mode>
       <redactor_sprite_params_x>3</redactor_sprite_params_x>
       <redactor_sprite_params_y>-15</redactor_sprite_params_y>
-      <redactor_image_url><![CDATA[styles/default/sv/editor/icons2.png]]></redactor_image_url>
+      <redactor_image_url><![CDATA[/styles/default/sv/editor/icons2.png]]></redactor_image_url>
       <redactor_button_type>img</redactor_button_type>
       <redactor_button_type_opt><![CDATA[]]></redactor_button_type_opt>
     </Button>
