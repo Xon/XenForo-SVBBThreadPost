@@ -6,18 +6,8 @@ class SV_ThreadPostBBCode_Installer
     {
         $db = XenForo_Application::get('db');
 
-        $addonModel = XenForo_Model::create("XenForo_Model_AddOn");
-        $addonsToUninstall = array('SVBBThreadPost');
-        foreach($addonsToUninstall as $addonToUninstall)
-        {
-            $addon = $addonModel->getAddOnById($addonToUninstall);
-            if (!empty($addon))
-            {
-                $dw = XenForo_DataWriter::create('XenForo_DataWriter_AddOn');
-                $dw->setExistingData($addonToUninstall);
-                $dw->delete();
-            }
-        }
+        $addonsToUninstall = array('SVBBThreadPost' => array());
+        SV_Utils_Install::removeOldAddons($addonsToUninstall);
 
         // truncate the bbcode cache table instead of slowly deleting bits
         $db->query('
