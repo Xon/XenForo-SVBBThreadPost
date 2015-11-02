@@ -162,6 +162,7 @@ class SV_ThreadPostBBCode_Listener
                     $thread = $foundThread;
                 }
             }
+            self::$threadCache[$thread_id] = $thread;
         }
 
         $link = XenForo_Link::buildPublicLink('threads', $thread);
@@ -209,6 +210,7 @@ class SV_ThreadPostBBCode_Listener
                     $post = $foundPost;
                 }
             }
+            self::$postCache[$post_id] = $post;
         }
 
         if (isset($post['thread_id']))
