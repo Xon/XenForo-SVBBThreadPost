@@ -131,6 +131,7 @@ class SV_ThreadPostBBCode_Listener
         if(!empty($rendererStates['bbmPreCacheInit']))
         {
             $parentClass->pushBbmPreCacheData('sv_LinkThreadIds', $thread_id);
+            $parentClass->renderSubTree($tag['children'], $rendererStates);
             return;
         }
 
@@ -177,6 +178,7 @@ class SV_ThreadPostBBCode_Listener
         if(!empty($rendererStates['bbmPreCacheInit']))
         {
             $parentClass->pushBbmPreCacheData('sv_LinkPostIds', $post_id);
+            $parentClass->renderSubTree($tag['children'], $rendererStates);
             return;
         }
 
