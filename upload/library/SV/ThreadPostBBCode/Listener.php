@@ -42,7 +42,8 @@ class SV_ThreadPostBBCode_Listener
             $postIds = XenForo_Application::arrayColumn(self::$postCache, 'post_id');
             $postIds = array_diff(array_unique($preCache['sv_LinkPostIds']), $postIds);
             $posts = $postModel->getPostsByIds($postIds, array(
-                'join' => XenForo_Model_Post::FETCH_THREAD | XenForo_Model_Post::FETCH_FORUM
+                'join' => XenForo_Model_Post::FETCH_THREAD | XenForo_Model_Post::FETCH_FORUM,
+                'skip_wordcount' => true,
             ));
             $errorPhraseKey = '';
 
@@ -196,7 +197,8 @@ class SV_ThreadPostBBCode_Listener
             $forumModel = self::getModelFromCache('XenForo_Model_Forum');
 
             $foundPost = $postModel->getPostById($post_id, array(
-                'join' => XenForo_Model_Post::FETCH_THREAD | XenForo_Model_Post::FETCH_FORUM
+                'join' => XenForo_Model_Post::FETCH_THREAD | XenForo_Model_Post::FETCH_FORUM,
+                'skip_wordcount' => true,
             ));
 
             if ($foundPost)
