@@ -188,7 +188,7 @@ class SV_ThreadPostBBCode_Listener
         // Get data section
         if(isset(self::$postCache[$post_id]))
         {
-            $thread = self::$postCache[$post_id];
+            $post = self::$postCache[$post_id];
         }
         else if ($parentClass->getView() !== null)
         {
