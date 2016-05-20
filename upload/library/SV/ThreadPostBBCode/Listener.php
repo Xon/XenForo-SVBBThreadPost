@@ -37,7 +37,21 @@ class SV_ThreadPostBBCode_Listener
 
         $nodesPerm = null;
         $posts = array();
-        if (!empty($preCache['sv_LinkPostIds']))
+        $threshold = 200;
+        if (!empty($preCache['sv_LinkPostIds']) && count($preCache['sv_LinkPostIds']) > $threshold)
+        {
+            $postIds = XenForo_Application::arrayColumn(self::$postCache, 'post_id');
+            $postIds = array_diff(array_unique($preCache['sv_LinkPostIds']), $postIds);
+            // negative lookup caching
+            foreach($postIds as $postId)
+            {
+                if (!isset(self::$postCache[$postId]))
+                {
+                    self::$postCache[$postId] = array('post_id' => $postId);
+                }
+            }
+        }
+        else if (!empty($preCache['sv_LinkPostIds']))
         {
             $postIds = XenForo_Application::arrayColumn(self::$postCache, 'post_id');
             $postIds = array_diff(array_unique($preCache['sv_LinkPostIds']), $postIds);
@@ -88,7 +102,20 @@ class SV_ThreadPostBBCode_Listener
             }
         }
 
-        if (!empty($preCache['sv_LinkThreadIds']))
+        if (!empty($preCache['sv_LinkThreadIds']) && count($preCache['sv_LinkThreadIds']) > $threshold)
+        {
+            $threadIds = array_unique(XenForo_Application::arrayColumn(self::$threadCache, 'thread_id'));
+            $threadIds = array_diff(array_unique($preCache['sv_LinkThreadIds']), $threadIds);
+            // negative lookup caching
+            foreach($threadIds as $threadId)
+            {
+                if (!isset(self::$threadCache[$threadId]))
+                {
+                    self::$threadCache[$threadId] = array('thread_id' => $threadId);
+                }
+            }
+        }
+        else if (!empty($preCache['sv_LinkThreadIds']))
         {
             $threadIds = array_unique(XenForo_Application::arrayColumn(self::$threadCache, 'thread_id'));
             $threadIds = array_diff(array_unique($preCache['sv_LinkThreadIds']), $threadIds);
