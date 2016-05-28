@@ -15,6 +15,8 @@ class SV_ThreadPostBBCode_Listener
     }
 
     // cache for the entire lifetime of the request, this permits edits to not be insane
+    static $cachekeyBase = 'postthreadmap_';
+    public static $cachekey = null;
     static $postCache = null;
     static $threadCache = array();
 
@@ -29,22 +31,23 @@ class SV_ThreadPostBBCode_Listener
         $visitorArr = $visitor->toArray();
 
         $db = XenForo_Application::getDb();
-        $postModel = self::getModelFromCache('XenForo_Model_Post');
-        $threadModel = self::getModelFromCache('XenForo_Model_Thread');
-        $forumModel = self::getModelFromCache('XenForo_Model_Forum');
+
+
         $cache = XenForo_Application::getCache();
 
         $threshold = 1000;
         // cached post->thread mapping
         if (self::$postCache === null)
         {
-            if ($cache)
+            if ($cache && self::$cachekey)
             {
-                //= $cache->load();
+                $raw = $cache->load(self::$cachekeyBase.self::$cachekey);
+                self::$postCache = @unserialize($raw);
             }
-            
-            
-            self::$postCache = array();
+            if (empty(self::$postCache))
+            {
+                self::$postCache = array();
+            }
         }
 
         $threads = array();
@@ -54,50 +57,65 @@ class SV_ThreadPostBBCode_Listener
         }
         if (!empty($preCache['sv_LinkPostIds']))
         {
+            $requestedPostIds = array_unique($preCache['sv_LinkPostIds']);
             $postIds = XenForo_Application::arrayColumn(self::$postCache, 'post_id');
-            $postIds = array_diff(array_unique($preCache['sv_LinkPostIds']), $postIds);
+            $postIds = array_diff($requestedPostIds, $postIds);
             $initialCount = count(self::$postCache);
 
-            if (count($postIds) < $threshold)
+            if ($postIds)
             {
-                // use a custom query to only fetch the minimum data
-                $posts = $postModel->fetchAllKeyed('
-                    SELECT post_id, thread_id, position
-                    FROM xf_post
-                    WHERE post_id IN (' . $db->quote($postIds) . ') and message_state = \'visible\'
-                ', 'post_id');
-                $errorPhraseKey = '';
-                // positive lookup caching
-                foreach($posts as $postId => &$post)
+                if (count($postIds) < $threshold)
                 {
-                    self::$postCache[$postId] = $post;
-                    $threads[$post['thread_id']] = true;
+                    // use a custom query to only fetch the minimum data
+                    $postModel = self::getModelFromCache('XenForo_Model_Post');
+                    $posts = $postModel->fetchAllKeyed('
+                        SELECT post_id, thread_id, position
+                        FROM xf_post
+                        WHERE post_id IN (' . $db->quote($postIds) . ') and message_state = \'visible\'
+                    ', 'post_id');
+                    $errorPhraseKey = '';
+                    // positive lookup caching
+                    foreach($posts as $postId => &$post)
+                    {
+                        self::$postCache[$postId] = $post;
+                    }
                 }
-            }
-            // negative lookup caching
-            foreach($postIds as $postId)
-            {
-                if (!isset(self::$postCache[$postId]))
+                // negative lookup caching
+                foreach($postIds as $postId)
                 {
-                    self::$postCache[$postId] = array('post_id' => $postId);
+                    if (!isset(self::$postCache[$postId]))
+                    {
+                        self::$postCache[$postId] = array('post_id' => $postId);
+                    }
+                }
+
+                // update cache
+                if (self::$cachekey && count(self::$postCache) > $initialCount)
+                {
+                    $raw = serialize(self::$postCache);
+                    $cache->save($raw, self::$cachekeyBase.self::$cachekey, array(), 1800);
                 }
             }
 
-            // update cache
-            if (count(self::$postCache) > $initialCount)
+            // record the requested threads
+            foreach($requestedPostIds as $postId)
             {
-                //self::$postCache
+                if (isset(self::$postCache[$postId]['thread_id']))
+                {
+                    $threads[self::$postCache[$postId]['thread_id']] = true;
+                }
             }
         }
 
-        $forumPermCheck = array();
-        $threadPermCheck = array();
         if ($threads)
         {
             $threadIds = XenForo_Application::arrayColumn(self::$threadCache, 'thread_id');
             $threadIds = array_diff(array_keys($threads), $threadIds);
             if (count($threadIds) < $threshold)
             {
+                static $forumPermCheck = array();
+                $threadModel = self::getModelFromCache('XenForo_Model_Thread');
+                $forumModel = self::getModelFromCache('XenForo_Model_Forum');
                 $threads = $threadModel->getThreadsByIds($threadIds, array(
                     'join' => XenForo_Model_Thread::FETCH_FORUM
                 ));
@@ -179,6 +197,16 @@ class SV_ThreadPostBBCode_Listener
         return '<a href="' . $link . '" class="internalLink">' . $parentClass->renderSubTree($tag['children'], $rendererStates) . '</a>';
     }
 
+    public static function getPageForPosition($position)
+    {
+        static $messagesPerPage = null;
+        if ($messagesPerPage == null)
+        {
+            $messagesPerPage = XenForo_Application::getOptions()->messagesPerPage;
+        }
+        return floor($post['position']/$messagesPerPage)+1;
+    }
+
     public static function bbcodePost(array $tag, array $rendererStates, &$parentClass )
     {
         $post_id = $tag['option'];
@@ -234,12 +262,7 @@ class SV_ThreadPostBBCode_Listener
 
         if (isset($post['thread_id']))
         {
-            static $messagesPerPage = null;
-            if ($messagesPerPage == null)
-            {
-                $messagesPerPage = XenForo_Application::getOptions()->messagesPerPage;
-            }
-            $page = floor($post['position']/$messagesPerPage)+1;
+            $page = self::getPageForPosition($post['position']);
             $link = XenForo_Link::buildPublicLink('threads', $post, array('page' => $page)) . '#post-' . $post['post_id'];
         }
         else
@@ -248,5 +271,10 @@ class SV_ThreadPostBBCode_Listener
         }
 
         return '<a href="' . $link . '" class="internalLink">' . $parentClass->renderSubTree($tag['children'], $rendererStates) . '</a>';
+    }
+
+    public static function load_class($class, array &$extend)
+    {
+        $extend[] = 'SV_ThreadPostBBCode_'.$class;
     }
 }

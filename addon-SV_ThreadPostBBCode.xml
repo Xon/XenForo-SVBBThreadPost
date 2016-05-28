@@ -7,9 +7,10 @@
   <admin_template_modifications/>
   <code_events/>
   <code_event_listeners>
-    <listener event_id="bbm_callback_precache" execute_order="10" callback_class="SV_ThreadPostBBCode_Listener" callback_method="bbcodeThreadPostPreCache" active="1" hint="" description=""/>
-    <listener event_id="bbm_callback_template_pre" execute_order="10" callback_class="SV_ThreadPostBBCode_Listener" callback_method="bbcodeThread" active="1" hint="thread" description=""/>
-    <listener event_id="bbm_callback_template_pre" execute_order="10" callback_class="SV_ThreadPostBBCode_Listener" callback_method="bbcodePost" active="1" hint="post" description=""/>
+    <listener event_id="bbm_callback_precache" execute_order="4543" callback_class="SV_ThreadPostBBCode_Listener" callback_method="bbcodeThreadPostPreCache" active="1" hint="" description=""/>
+    <listener event_id="bbm_callback_template_pre" execute_order="4543" callback_class="SV_ThreadPostBBCode_Listener" callback_method="bbcodeThread" active="1" hint="thread" description=""/>
+    <listener event_id="bbm_callback_template_pre" execute_order="4543" callback_class="SV_ThreadPostBBCode_Listener" callback_method="bbcodePost" active="1" hint="post" description=""/>
+    <listener event_id="load_class" execute_order="4543" callback_class="SV_ThreadPostBBCode_Listener" callback_method="load_class" active="1" hint="XenForo_BbCode_Formatter_Base" description="XenForo_BbCode_Formatter_Base"/>
   </code_event_listeners>
   <cron/>
   <email_templates/>
