@@ -204,7 +204,7 @@ class SV_ThreadPostBBCode_Listener
         {
             $messagesPerPage = XenForo_Application::getOptions()->messagesPerPage;
         }
-        return floor($post['position']/$messagesPerPage)+1;
+        return floor($position/$messagesPerPage)+1;
     }
 
     public static function bbcodePost(array $tag, array $rendererStates, &$parentClass )
