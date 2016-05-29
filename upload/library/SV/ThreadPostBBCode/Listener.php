@@ -90,7 +90,7 @@ class SV_ThreadPostBBCode_Listener
                 }
 
                 // update cache
-                if (self::$cachekey && count(self::$postCache) > $initialCount)
+                if (self::$cachekey && count(self::$postCache) > $initialCount && count(self::$postCache) > 20)
                 {
                     $raw = serialize(self::$postCache);
                     $cache->save($raw, self::$cachekeyBase.self::$cachekey, array(), 1800);
