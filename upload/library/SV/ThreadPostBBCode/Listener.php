@@ -177,7 +177,7 @@ class SV_ThreadPostBBCode_Listener
                 $parentClass->pushBbmPreCacheData('sv_LinkThreadIds', $thread_id);
             }
             $parentClass->renderSubTree($tag['children'], $rendererStates);
-            return;
+            return '';
         }
 
         $thread = array('thread_id' => $thread_id);
@@ -192,7 +192,7 @@ class SV_ThreadPostBBCode_Listener
             $threadModel = self::getModelFromCache('XenForo_Model_Thread');
             $forumModel = self::getModelFromCache('XenForo_Model_Forum');
 
-            $foundThread = $threadModel->getThreadById(c, array(
+            $foundThread = $threadModel->getThreadById($thread_id, array(
                 'join' => XenForo_Model_Thread::FETCH_FORUM
             ));
 
@@ -237,7 +237,7 @@ class SV_ThreadPostBBCode_Listener
                 $parentClass->pushBbmPreCacheData('sv_LinkPostIds', $post_id);
             }
             $parentClass->renderSubTree($tag['children'], $rendererStates);
-            return;
+            return '';
         }
 
         $post = array('post_id' => $post_id);
