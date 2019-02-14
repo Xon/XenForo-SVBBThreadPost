@@ -35,7 +35,8 @@ class SV_ThreadPostBBCode_Listener
 
         $cache = XenForo_Application::getCache();
 
-        $threshold = 1000;
+        $threshold = 500;
+        $distanceThreshold = 500000;
         // cached post->thread mapping
         if (self::$postCache === null)
         {
@@ -64,7 +65,22 @@ class SV_ThreadPostBBCode_Listener
 
             if ($postIds)
             {
-                if (count($postIds) < $threshold)
+                // sanity check since MySQl range scan can do very stupid things
+                $min = PHP_INT_MAX;
+                $max = 0;
+                foreach($postIds as $postId)
+                {
+                    if ($postId < $min)
+                    {
+                        $min = $postId;
+                    }
+                    if ($postId > $max)
+                    {
+                        $max = $postId;
+                    }
+                }
+
+                if (abs($max - $min) < $distanceThreshold && count($postIds) < $threshold)
                 {
                     // use a custom query to only fetch the minimum data
                     $postModel = self::getModelFromCache('XenForo_Model_Post');
