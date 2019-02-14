@@ -168,11 +168,14 @@ class SV_ThreadPostBBCode_Listener
 
     public static function bbcodeThread(array $tag, array $rendererStates, &$parentClass )
     {
-        $thread_id = $tag['option'];
+        $thread_id = intval($tag['option']);
         // precaching
         if(!empty($rendererStates['bbmPreCacheInit']))
         {
-            $parentClass->pushBbmPreCacheData('sv_LinkThreadIds', $thread_id);
+            if ($thread_id)
+            {
+                $parentClass->pushBbmPreCacheData('sv_LinkThreadIds', $thread_id);
+            }
             $parentClass->renderSubTree($tag['children'], $rendererStates);
             return;
         }
@@ -184,12 +187,12 @@ class SV_ThreadPostBBCode_Listener
         {
             $thread = self::$threadCache[$thread_id];
         }
-        else if ($parentClass->getView() !== null)
+        else if ($thread_id && $parentClass->getView() !== null)
         {
             $threadModel = self::getModelFromCache('XenForo_Model_Thread');
             $forumModel = self::getModelFromCache('XenForo_Model_Forum');
 
-            $foundThread = $threadModel->getThreadById($thread_id, array(
+            $foundThread = $threadModel->getThreadById(c, array(
                 'join' => XenForo_Model_Thread::FETCH_FORUM
             ));
 
@@ -225,11 +228,14 @@ class SV_ThreadPostBBCode_Listener
 
     public static function bbcodePost(array $tag, array $rendererStates, &$parentClass )
     {
-        $post_id = $tag['option'];
+        $post_id = intval($tag['option']);
         // precaching
         if(!empty($rendererStates['bbmPreCacheInit']))
         {
-            $parentClass->pushBbmPreCacheData('sv_LinkPostIds', $post_id);
+            if ($post_id)
+            {
+                $parentClass->pushBbmPreCacheData('sv_LinkPostIds', $post_id);
+            }
             $parentClass->renderSubTree($tag['children'], $rendererStates);
             return;
         }
@@ -248,7 +254,7 @@ class SV_ThreadPostBBCode_Listener
                 $post = $thread;
             }
         }
-        else if ($parentClass->getView() !== null)
+        else if ($post_id && $parentClass->getView() !== null)
         {
             $postModel = self::getModelFromCache('XenForo_Model_Post');
 
